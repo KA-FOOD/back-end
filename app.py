@@ -1,11 +1,18 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, send_file
+from flask_cors import CORS, cross_origin
 import sqlite3
 import csv
 import os
+from sqlalchemy import create_engine
 
 app = Flask(__name__)
-
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 DATABASE = 'deb.db'
+
+DATABASE_URI = 'sqlite:///deb.db'
+engine = create_engine(DATABASE_URI, connect_args={"timeout": 20})
+
 
 def init_db():
     with sqlite3.connect(DATABASE) as conn:
@@ -43,6 +50,10 @@ def init_db():
             )
         ''')
         conn.commit()
+
+@app.route('/api/test', methods=['GET'])
+def test_connection():
+    return jsonify({'message': 'Connection successful'}), 200
 
 @app.route('/')
 def index():
@@ -279,3 +290,5 @@ def add_facture():
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
+
+
