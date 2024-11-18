@@ -5,5 +5,7 @@ partie back-end de l'application web
 pip install -r requirements.txt
 
 # lancer le backend
+venv/Scripts/activate
+
 python app.py
 

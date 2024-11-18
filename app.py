@@ -42,6 +42,14 @@ def init_db():
                 FOREIGN KEY (article_id) REFERENCES Articles (id)
             )
         ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Fournisseurs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nom TEXT NOT NULL,
+                pays_origine TEXT,
+                nature_transaction TEXT
+            )
+        ''')
         conn.commit()
 
 @app.route('/')
@@ -50,8 +58,11 @@ def index():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Articles')
     articles = cursor.fetchall()
+    cursor.execute('SELECT * FROM Fournisseurs')
+    fournisseurs = cursor.fetchall()
     conn.close()
-    return render_template('index.html', articles=articles)
+    return render_template('index.html', articles=articles, fournisseurs=fournisseurs)
+
 
 @app.route('/add_article', methods=['POST'])
 def add_article():
@@ -67,36 +78,28 @@ def add_article():
 @app.route('/add_facture', methods=['POST'])
 def add_facture():
     date = request.form['date']
-    fournisseur = request.form['fournisseur']
+    fournisseur = request.form['fournisseur_name']
     article_id = request.form['article_id']
-    quantite = request.form['quantite']
-    montant_ht = request.form['montant_ht']
     nc8 = request.form['nc8']
-    ngp9 = request.form['ngp9']
     pays_origine = request.form['pays_origine']
     valeur = request.form['valeur']
-    regime = request.form['regime']
     masse_nette = request.form['masse_nette']
-    unites_suppl = request.form['unites_suppl']
     nature_transaction_a = request.form['nature_transaction_a']
-    nature_transaction_b = request.form['nature_transaction_b']
     mode_transport = request.form['mode_transport']
     departement = request.form['departement']
     pays_provenance = request.form['pays_provenance']
-    code_tva = request.form['code_tva']
-    reference_interne = request.form['reference_interne']
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO Factures (
-            date, fournisseur, article_id, quantite, montant_ht, nc8, ngp9, pays_origine, valeur,
-            regime, masse_nette, unites_suppl, nature_transaction_a, nature_transaction_b, mode_transport,
-            departement, pays_provenance, code_tva, reference_interne
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (date, fournisseur, article_id, quantite, montant_ht, nc8, ngp9, pays_origine, valeur, regime,
-          masse_nette, unites_suppl, nature_transaction_a, nature_transaction_b, mode_transport,
-          departement, pays_provenance, code_tva, reference_interne))
+            date, fournisseur, article_id, nc8, pays_origine, valeur,
+            masse_nette, nature_transaction_a, mode_transport,
+            departement, pays_provenance, reference_interne
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (date, fournisseur, article_id, nc8, pays_origine, valeur, masse_nette,
+        nature_transaction_a, mode_transport,
+          departement, pays_provenance, reference_interne))
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
@@ -132,6 +135,16 @@ def search_article():
     articles = cursor.fetchall()
     conn.close()
     return jsonify(articles)
+
+@app.route('/search_fournisseur', methods=['GET'])
+def search_fournisseur():
+    query = request.args.get('query', '')
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM Fournisseurs WHERE Fournisseur LIKE ?', ('%' + query + '%',))
+    fournisseurs = cursor.fetchall()
+    conn.close()
+    return jsonify(fournisseurs)
 
 @app.route('/generate_csv')
 def generate_csv():
@@ -266,6 +279,8 @@ def add_facture():
         fournisseur_id = fournisseur_data[0]
         cursor.execute('UPDATE Fournisseurs SET pays_origine = ?, nature_transaction = ? WHERE id = ?', 
                        (pays_origine, nature_transaction_a, fournisseur_id))
+
+
 
     cursor.execute('''
         INSERT INTO Factures (
