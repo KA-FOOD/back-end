@@ -1,0 +1,39 @@
+@|saveto.opendialog = 0 |@ @|saveto.openaftersave = 0 |@ @|action= saveto:S:\AR\miaPrint\GAT_RG_AT24033819_420433 |@
+Numéro de TVA. ATU47893506
+BBN/ILN-Nr. 9002859000003
+Interseroh-Nr. 212819
+Page - 1 -
+Adresse de facturation Adresse de livraison
+EURL K & A Food - Salamarket EURL K & A Food - Salamarket
+8 Avenue Larrieu Thibaud 8 Avenue Larrieu Thibaud
+31100 Toulouse 31100 Toulouse
+FRANCE FRANCE
+Retoure an: Gunz Warenhandels GmbH, Zollweg 1, AT-6841 Mäder
+Facture Nr.: AT24033819 Mäder, 10.10.2024
+Livraison / Date de livraison / Date de facture
+N° commande 2024121977
+N° bon de livraison 2024121977/00
+N° client 420433 client IDE-Nr. : FR16802773812
+Date de la commande 08.10.2024 Date de livr. : 15.10.2024
+Conditions de paiement payable net dans 30 jours Cond. de livr. : lieu de livraison au pay d´importation
+Numéro Désignation produit Unité Nombre Nombre Prix par . Rabais Total
+d´article coli colis pièces pièce
+0075991 Thé glacé pêche 2l 2.25 .. 6 2 12 1.3900 Netto 16.68
+0077521 Boisson à la pomme verte 40% ... 2.292... 6 2 12 1.6300 Netto 19.56
+0081050 Boisson à la pêche 25% 2l 2.492... 6 2 12 1.7800 Netto 21.36
+0081292 Mangue maracuja 10% 0,5l 0.799... 12 1 12 0.5600 Netto 6.72
+0081807 Popcorn sucré 100g 0.992... 24 1 24 0.7000 Netto 16.80
+0081821 Citrilemon avec jus de citron co... 0.591... 12 2 24 0.4200 Netto 10.08
+0082195 Citron-lychies 10% 0,5l 0.799... 12 1 12 0.5600 Netto 6.72
+0082981 Citrigreen jus avec arôme limett... 0.597... 12 1 12 0.4200 Netto 5.04
+0083001 oP Jus multivitamines 100% 1l 1.692... 8 2 16 1.2100 Netto 19.36
+0083089 oP Miel mille fleurs 500g 3.994... 12 1 12 2.8500 Netto 34.20
+0083993 Barbe à papa 2x20g 1.191... 12 1 12 0.8500 Netto 10.20
+0084055 Substitut de lait en poudre pour ... 2.693... 12 1 12 1.9200 Netto 23.04
+0084076 Bulli pain à la crème et framboi... 2.392... 12 1 12 1.7100 Netto 20.52
+Merci de bien vouloir fectuer le virement sur le compte suivant:
+CIC CA CLIENTELE ENTREPRISE EUROPE 31, rue Jean Wenger-Valentin, 67958 Strasbourg Cedex 9
+N° RIB: 30087 33085 00065799501 05, N° IBAN: FR76 3008 7330 8500 0657 9950 105, , BIC: CMCIFRPP
+Lieu de juridiction: Feldkirch. Les marchandises restent propriété du vendeur jusqu´au paiment total de la facture. En cas de non-payment la
+facture à l´échéance, l´acheteur est oblige à payer tous les frais des mises en demeure et les protestations. En cas d´avarie survenue au
+cours du transport, cela doit être annoncé immédiatement le même jour de la réception de marchandises.

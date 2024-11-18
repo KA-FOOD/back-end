@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats</title>
+</head>
+<body>
+    <h1>Données extraites</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Nom de l'article</th>
+                <th>Prix</th>
+                <th>Nombre de colis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.ref }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.colis }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/">Retour</a>
+</body>
+</html>
