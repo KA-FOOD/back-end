@@ -26,6 +26,7 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
             extracted_data = extract_gunz_data(file_path)
+            print(extracted_data)
             return render_template("reception/result.html", data=extracted_data)
 
     return render_template("reception/reception.html")

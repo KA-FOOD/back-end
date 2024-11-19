@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Données extraites</h1>
+    {% if data %}
     <table border="1">
         <thead>
             <tr>
@@ -19,14 +20,17 @@
         <tbody>
             {% for item in data %}
             <tr>
-                <td>{{ item.ref }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.colis }}</td>
+                <td>{{ item.numero_article }}</td>
+                <td>{{ item.designation_produit }}</td>
+                <td>{{ item.prix_par_piece }}</td>
+                <td>{{ item.nombre_pieces }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>Aucune donnée trouvée.</p>
+    {% endif %}
     <a href="/">Retour</a>
 </body>
 </html>
