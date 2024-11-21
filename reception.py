@@ -1,9 +1,12 @@
 import os
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session, Response
 import pdfplumber
 import re
+import csv
+import io
 
 app = Flask(__name__)
+app.secret_key = "13cfc1ebd3ba359fce7bb3ccf5dd37862938d149d53d44c7"
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -23,10 +26,9 @@ def upload_file():
             return "Aucun fichier sélectionné"
         
         if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
             extracted_data = extract_gunz_data(file_path)
-            print(extracted_data)
+            session["extracted_data"] = extracted_data
             return render_template("reception/result.html", data=extracted_data)
 
     return render_template("reception/reception.html")
@@ -91,6 +93,24 @@ def extract_gunz_data(file_path):
         print(f"Erreur : {e}")
     return data
 
+
+@app.route("/export_csv", methods=["GET"])
+def export_csv():
+    # Récupérer les données de la session
+    data = session.get("extracted_data", [])
+    print(data)
+    # Nom du fichier CSV
+    filename = "facture_export.csv"
+    
+    # Utiliser un générateur pour écrire ligne par ligne
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=["numero_article", "designation_produit", "prix_par_piece", "nombre_pieces"])
+    writer.writeheader()  # Ajouter les en-têtes
+    writer.writerows(data)  # Ajouter les données
+    print("Contenu du fichier CSV :", output.getvalue())    
+    response = Response(output.getvalue(), mimetype="text/csv")
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
