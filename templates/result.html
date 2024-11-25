@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Résultats</title>
-</head>
-<body>
+{% extends "index.html" %}
+
+{% block content %}
     <h1>Données extraites</h1>
     {% if data %}
     <table border="1">
@@ -33,5 +28,4 @@
     {% endif %}
     <a href="/export_csv" class="btn btn-primary">Exporter au format CSV</a>
     <a href="/">Retour</a>
-</body>
-</html>
+{% endblock %}

@@ -1,4 +1,13 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, send_file
+from views.reception import reception_blueprint
+from views.dashboard import dashboard_blueprint
+from views.deb import deb_blueprint
+from views.result import result_blueprint
+import views.reception
+import views.deb
+import views.dashboard
+import views.result
+
 import sqlite3
 import csv
 import os
@@ -7,25 +16,32 @@ app = Flask(__name__)
 
 DATABASE = 'deb.db'
 
+# Enregistrer les blueprints
+app.register_blueprint(dashboard_blueprint, url_prefix="/")
+app.register_blueprint(reception_blueprint, url_prefix="/reception")
+app.register_blueprint(deb_blueprint, url_prefix="/deb")
+app.register_blueprint(result_blueprint, url_prefix="/result")
+
+
 def init_db():
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Articles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nom TEXT NOT NULL,
-                nomenclature TEXT NOT NULL
+                nom TEXT ,
+                nomenclature TEXT 
             )
         ''')
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Factures (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                fournisseur TEXT NOT NULL,
-                article_id INTEGER NOT NULL,
-                quantite INTEGER NOT NULL,
-                montant_ht REAL NOT NULL,
-                nc8 TEXT NOT NULL,
+                date TEXT ,
+                fournisseur TEXT ,
+                article_id INTEGER ,
+                quantite INTEGER ,
+                montant_ht REAL ,
+                nc8 TEXT ,
                 ngp9 TEXT,
                 pays_origine TEXT,
                 valeur REAL,
@@ -45,7 +61,7 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Fournisseurs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nom TEXT NOT NULL,
+                nom TEXT ,
                 pays_origine TEXT,
                 nature_transaction TEXT
             )
@@ -85,8 +101,8 @@ def add_facture():
     valeur = request.form['valeur']
     masse_nette = request.form['masse_nette']
     nature_transaction_a = request.form['nature_transaction_a']
-    mode_transport = request.form['mode_transport']
-    departement = request.form['departement']
+    mode_transport = 3
+    departement = 31
     pays_provenance = request.form['pays_provenance']
 
     conn = sqlite3.connect(DATABASE)
@@ -95,11 +111,11 @@ def add_facture():
         INSERT INTO Factures (
             date, fournisseur, article_id, nc8, pays_origine, valeur,
             masse_nette, nature_transaction_a, mode_transport,
-            departement, pays_provenance, reference_interne
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            departement, pays_provenance
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (date, fournisseur, article_id, nc8, pays_origine, valeur, masse_nette,
         nature_transaction_a, mode_transport,
-          departement, pays_provenance, reference_interne))
+          departement, pays_provenance))
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
@@ -205,19 +221,19 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Articles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nom TEXT NOT NULL,
-                nomenclature TEXT NOT NULL
+                nom TEXT ,
+                nomenclature TEXT 
             )
         ''')
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Factures (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                fournisseur_id INTEGER NOT NULL,
-                article_id INTEGER NOT NULL,
-                quantite INTEGER NOT NULL,
-                montant_ht REAL NOT NULL,
-                nc8 TEXT NOT NULL,
+                date TEXT ,
+                fournisseur_id INTEGER ,
+                article_id INTEGER ,
+                quantite INTEGER ,
+                montant_ht REAL ,
+                nc8 TEXT ,
                 ngp9 TEXT,
                 pays_origine TEXT,
                 valeur REAL,
@@ -238,7 +254,7 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Fournisseurs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nom TEXT NOT NULL,
+                nom TEXT ,
                 pays_origine TEXT,
                 nature_transaction TEXT
             )
@@ -294,3 +310,9 @@ def add_facture():
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
+
+
+
+@app.route('/reception')
+def showreception():
+    return render_template('reception/reception.html')

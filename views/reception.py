@@ -4,17 +4,24 @@ import pdfplumber
 import re
 import csv
 import io
+from flask import Blueprint, render_template
+
+reception_blueprint = Blueprint("reception", __name__)
 
 app = Flask(__name__)
 app.secret_key = "13cfc1ebd3ba359fce7bb3ccf5dd37862938d149d53d44c7"
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+@reception_blueprint.route("/")
+def reception():
+    return render_template("reception.html")
+
 # Créer le dossier si nécessaire
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/result", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
         # Vérifier si un fichier est uploadé
@@ -27,36 +34,64 @@ def upload_file():
         
         if file:
             file.save(file_path)
-            extracted_data = extract_gunz_data(file_path)
+            # Create a secure filename and path
+            filename = file.filename
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            extracted_data = extract_data_from_pdf(file_path)
             session["extracted_data"] = extracted_data
             return render_template("reception/result.html", data=extracted_data)
 
     return render_template("reception/reception.html")
 
-# def extract_data_from_pdf(file_path):
-#     data = []
-#     try:
-#         with pdfplumber.open(file_path) as pdf:
-#             for page_number, page in enumerate(pdf.pages):
-#                 text = page.extract_text()
-#                 print(f"Page {page_number + 1}:\n{text}\n{'-' * 50}")
-#                 # Tu peux aussi écrire le texte dans un fichier pour une inspection
-#                 with open(f"page_{page_number + 1}.txt", "w", encoding="utf-8") as f:
-#                     f.write(text)
+def extract_data_from_pdf(file_path):
+    data = []
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page_number, page in enumerate(pdf.pages):
+                text = page.extract_text()
+                
+                # Debug: Print raw text to see what we're getting
+                print(f"Raw text from page {page_number + 1}:")
+                print(text)
+                
+                # If you're working with tables, you can try this instead:
+                tables = page.extract_tables()
+                for table in tables:
+                    for row in table:
+                        # Process each row based on your PDF structure
+                        # Example: assuming columns are ref, name, price, colis
+                        if len(row) >= 4:  # Make sure row has enough columns
+                            data.append({
+                                "ref": row[0],
+                                "name": row[1],
+                                "price": row[2],
+                                "colis": row[3]
+                            })
+                
+                # If you still want to try regex, but with more flexible pattern:
+                # Adjust this pattern based on your actual PDF format
+                articles = re.findall(r"Réf: (\w+).*?Nom: (.*?)\s+Prix: ([\d,.]+).*?Colis: (\d+)", text, re.DOTALL)
 
-#                 # Extraction des informations spécifiques avec des regex
-#                 articles = re.findall(r"Réf: (\w+).*?Nom: (.*?)\s+Prix: ([\d,.]+).*?Colis: (\d+)", text, re.DOTALL)
-#                 for article in articles:
-#                     ref, name, price, colis = article
-#                     data.append({
-#                         "ref": ref,
-#                         "name": name,
-#                         "price": price,
-#                         "colis": colis,
-#                     })
-#     except Exception as e:
-#         print(f"Erreur lors de la lecture du PDF : {e}")
-#     return data
+
+                for article in articles:
+                    ref, name, price, colis = article
+                    if all([ref.strip(), name.strip(), price.strip(), colis.strip()]):
+                        data.append({
+                            "ref": ref.strip(),
+                            "name": name.strip(),
+                            "price": price.strip(),
+                            "colis": colis.strip(),
+                        })
+                        
+    except Exception as e:
+        print(f"Error processing PDF: {str(e)}")
+        # You might want to log the error or handle it appropriately
+        raise
+    
+    # Debug: Print extracted data
+    print("Extracted data:", data)
+    return data
 
 def extract_gunz_data(file_path):
     data = []
